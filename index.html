@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/index.css">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script src="./vuejs/vue.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+
+  <div id="app">
+    <p>{{ message }}</p>
+    <p>{{ number + 5 }}</p>
+    <p>{{ ok ? 'Yes' : 'No' }}</p>
+    <p>{{ sayHi() }}</p>
+    <a v-text="message"></a>
+    <div>{{ html }}</div>
+    <div v-html="html"></div>
+
+    <!-- v-baindの使用 -->
+    <a v-bind:href="url">google</a>
+    <a :href="url">google(v-bind省略版)</a>
+    <a :[attribute]='url'>Google(attribute使用版)</a>
+    <a :href="twitterURL" :id="number">Twitter</a>
+    <!-- 上記でもいいが少し冗長なので以下に書き換え -->
+    <a v-bind="{href:twitterURL, id: number}">Twitter(v-bind利用)</a>
+    <!-- さらにオブジェクトとして書き換え以下 -->
+    <a v-bind="twitterObject">Twitter(Objectとして利用)</a>
+
+    <!-- v-onでクリックやマウスの動きで処理の発火 -->
+    <p>現在{{ number1 }}回クリックされています</p>
+    <button v-on:click="number1 ++ ">カウントアップ</button>
+    <button v-on:click="countUp()">カウントアップ(func版)</button>
+    <button v-on:click="countUp2(2)">カウントアップ(二倍)</button>
+
+    <p v-on:mousemove="changeMousePosition">この上にマウスを載せてください
+      <span v-on:mousemove="noEvent">ここでは反応しないでください</span></p>
+    <p v-on:mousemove="changeMousePosition2(4, $event)">この上にマウスを載せてください(引数あり)／<span v-on:mousemove.stop>ここでは反応しないで下さい(stopで省略)</span></p>
+    <p>X:{{x}}, Y:{{y}}</p>
+
+    <a v-on:click="noEvent2" href="https://google.com">Google</a>
+    <a v-on:click.prevent href="https://google.com">Google(prevnetで省略)</a>
+<br>
+    <!-- 21章：キー修飾子 -->
+    <!-- enterとspaveキーを押した時に発火 -->
+    <input type="text" v-on:keyup.enter.space="myAlert">
+
+    <!-- 22章：v-onの動的発火 -->
+    <p>現在{{ number1 }}回クリックされています</p>
+    <button v-on:[event]="countUp">カウントアップ(動的発火)</button>
+    <button @[event]="countUp">カウントアップ(@で省略)</button>
+    <button @click="countUp">カウントアップ(@で省略)</button><br>
+
+    <!-- 24章：v-model 双方向データ連結(バインディング)-->
+    <input type="text" v-model="message24">
+    <h1>{{ message24 }}</h1>
+
+    <!-- 25章：computedプロパティで動的データの表現 -->
+    <p>{{ counter25 }}</p>
+    <p>{{ counter25 > 3 ? '3より上' : '3以下'}}</p>
+    <!-- これでも動くが、記述が冗長なので以下に書き換え -->
+    <p>{{ lessThanThreeComputed }}</p>
+    <button @click="counter25 +=1">+1</button>
+
+    <p>26章：computedとmethodの違い(要復習)</p>
+    <p>{{counter26}}</p>
+    <p>{{ lessThanThreeMethod26() }}</p>
+    <button @click="counter26 += 1">+1</button>
+
+    <p>27章：ウォッチャを使ってデータが変わった時に特定の処理をする</p>
+    <p>{{ counter27 }}</p>
+    <p>{{ lessThanThree27 }}</p>
+    <button @click="counter27 += 1">+1</button>
+
+    <p>28章：丸括弧はいつ必要なのか</p>
+    <p>computedには（）は付けたらあかん</p>
+    <p>methodには必ず()をつける</p>
+
+    <h4>29章：クラスをデータに連結(バインデイング)</h4>
+    <!-- 複数のクラスを指定する時は従来スペースで区切る -->
+    <!-- その複数のクラスを場合によって切り替えて取得する方法 -->
+    <!-- ハイフンを使うときは''で括るのを忘れずに！ -->
+    <p :class="{ red: true, 'bg-blue': false}">Hello</p>
+    <p :class="{ red: isActive, 'bg-blue': !isActive}">World</p>
+    <p :class="classObject">こんにちは</p>
+    <button @click="isActive = !isActive">切り替え</button>
+
+    <h4>30章：配列を利用したデータ連結</h4>
+    <p :class="[{red: isActive}, bg30]">hello</p>
+
+    <h4>31章-33章：スタイルオブジェクトをデータに記述してコードを見やすくする</h4>
+    <p style="color:red; background-color: blue">Hello</p>
+    <p :style="{color: textColor31, 'background-color': bgColor31}">Hello</p>
+    <p :style="styleObject32">World</p>
+    <p :style="[styleObject32, baseStyles33]">複数のスタイルを配列で適用</p>
+
+    <h3>条件付きレンダリングとリストレンダリング</h3>
+    <h4>v-ifディレクティブで条件に応じて描画処理を記述</h4>
+    <p v-if="ok36">v-ifでtrueでOK!を表示</p>
+    <p>v-ifがfalseだと「<span v-if="no36">ok!</span>」が表示されない</p>
+
+    <h4>v-elseの使用でv-ifがfalseの場合の処理を記述</h4>
+    <p v-if='ok36'>v-elseはv-ifの真下に記述しないと適切に処理されない</p>
+    <p v-else>Not OK...</p>
+
+    <h4>38章：v-else-ifを使って複雑な条件式を作る</h4>
+    <p v-if="ok38">条件１</p>
+    <p v-else-if="maybeOK38">条件2</p>
+    <p v-else>条件3：条件１も条件２もfalseの時に表示される</p>
+
+    <h4>39章：templateタグを使用して不必要な要素を加えずv-ifを複数の要素に適応</h4>
+    <template v-if="ok39">
+      <p>Hello</p>
+      <p>Good Bye</p>
+      <p>おはよう</p>
+    </template>
+    <button @click="ok39 = !ok39">切り替えボタン</button>
+
+    <h4>40章：v-showで頻繁な切り替え処理の動作性を向上させる</h4>
+    <p v-show="ok39">v-showで表示・非表示</p>
+    <button @click="ok39 = !ok39">ボタン40</button>
+    <p>※v-showは完全に消すのではなくdiplay:noneで非表示にしているだけ</p>
+    <p>※従ってtemplateタグは使えず、v-elseも使用できない。初期描画も遅い</p>
+    <p>※v-ifは頻繁に切り替えのたびに描画し直すので切り替えが重い</p>
+    <p>頻繁に切り替える場合はv-showを使用し、頻度が低い場合はv-ifを使うのが良い</p>
+    <p></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <button v-on:click="reverseMessage">メッセージ反転</button> -->
+  </div>
+
+  <script>
+    new Vue({
+      el: "#app",  //コンマは絶対に忘れないこと！
+      data: {
+        message: "Hello, World!!",
+        number: 3,
+        ok: true,
+        html: '<h1>h1です</h1>',
+        url: 'https://google.com',
+        attribute:'href',
+        twitterURL: "https://twitter.com",
+        number: 31,
+        twitterObject: {
+          href: 'https://twitter.com',
+          id: 31,
+        },
+        x: 0,
+        y: 0,
+        //v-onで処理の発火
+        number1: 0,
+        //22章
+        event: "click",
+        //24章
+        message24: 'こんにちは',
+        //25章
+        counter25: 0,
+        //lessThanThree: counter > 3 ? '３より上' : '3'　のようにはかけない（エラーになる）
+        //データはあくまで静的な初期値を置くことしかできない。
+        //26章
+        counter26: 0,
+        //27章
+        counter27: 0,
+        //29章
+        isActive: true,
+        //30章
+        color30: 'red',
+        bg30: 'bg-blue',
+        //31章
+        textColor31: 'red',
+        bgColor31: 'blue',
+        styleObject32: {
+          color: 'red',
+          'background-color': 'blue',
+        },
+        baseStyles33: {
+          fontSize: '2em',
+        },
+        ok36: true,
+        no36: false,
+        ok38: false,
+        maybeOK38: false,
+        ok39: true,
+      },
+
+      //25章
+      computed: {
+        lessThanThreeComputed: function() {
+          return this.counter25 > 3 ? '3より上' : '3以下';
+        }
+      },
+
+      //27章
+      computed: {
+        lessThanThree27: function() {
+          return this.counter27 > 3 ? '3より上' : '3以下';
+        },
+        //29章
+        classObject: function() {
+          return {
+            red: this.isActive,
+            'bg-blue': !this.isActive
+          }
+        }
+      },
+      watch: {
+        counter27: function() {
+          var vm = this;
+          setTimeout(function(){
+            vm.counter27 = 0
+          }, 3000)
+        }
+      },
+
+
+      methods: {
+        sayHi: function() {
+          this.message = 'Hello, VueJS'
+          return 'hi';
+        },
+        countUp: function(){
+          this.number1 ++
+        },
+        countUp2: function(times) {
+          this.number1 += 1*times
+        },
+        changeMousePosition: function(event){
+          this.x = event.clientX;
+          this.y = event.clientY;
+        },
+        changeMousePosition2: function(divideNumber, event){
+          this.x = event.clientX / divideNumber;
+          this.y = event.clientY / divideNumber;
+        },
+        noEvent: function(event) {
+          event.stopPropagation()
+        },
+        noEvent2: function(event) {
+          event.preventDefault();
+        },
+        myAlert() {
+          alert("アラート");
+        },
+        //26章
+        lessThanThreeMethod26: function() {
+          return this.counter26 > 3 ? '3より上' : '3以下'
+        }
+
+
+      },
+
+      //メッセージ反転メソッド
+      // methods: {
+      //   reverseMessage: function() {
+      //     this.message = this.message.split('').reverse().join('')
+      //   }
+      // }
+    })
+  </script>
+
+</body>
+</html>
