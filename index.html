@@ -81,7 +81,7 @@
     <p>computedには（）は付けたらあかん</p>
     <p>methodには必ず()をつける</p>
 
-    <h4>29章：クラスをデータに連結(バインデイング)</h4>
+    <h4>29章：クラスをデータに連結(バインデイング)(2020/3/6)</h4>
     <!-- 複数のクラスを指定する時は従来スペースで区切る -->
     <!-- その複数のクラスを場合によって切り替えて取得する方法 -->
     <!-- ハイフンを使うときは''で括るのを忘れずに！ -->
@@ -128,7 +128,65 @@
     <p>※従ってtemplateタグは使えず、v-elseも使用できない。初期描画も遅い</p>
     <p>※v-ifは頻繁に切り替えのたびに描画し直すので切り替えが重い</p>
     <p>頻繁に切り替える場合はv-showを使用し、頻度が低い場合はv-ifを使うのが良い</p>
-    <p></p>
+
+    <h3>41章：v-forディレクティブで配列に基づくリストを描画(2020/3/7)</h3>
+    <ul>
+      <li v-for="fruit in fruits41">{{fruit}}</li>
+    </ul>
+    <h3>42章：v-forは第二引数にインデックスを取れる</h3>
+    <ul>
+      <li v-for="(fruit, index42) in fruits41">({{index42}}){{fruit}}</li>
+    </ul>
+    <h3>43章：v-forをオブジェクトに使用する</h3>
+    <ul>
+      <li v-for="value in object43">{{value}}</li>
+    </ul>
+    <h3>44章：オブジェクトのv-forには第二引数にキーを取り、第三引数にインデックスをとる</h3>
+    <ul>
+      <li v-for="(value44, key44, index44) in object43">({{index44}}){{key44}}-{{value44}}</li>
+    </ul>
+    <h3>45章：templateタグを利用して不必要な要素を加えずにv-forを複数要素に適用する</h3>
+    <ul>
+      <template v-for="fruit in fruits41">
+          <li>{{fruit}}</li>
+          <hr>
+      </template>
+    </ul>
+    <h3>46章：「n in 5」のように整数値に対してv-forを適用</h3>
+    <ul>
+      <li v-for="n in 5">{{n}}</li>
+    </ul>
+    <h3>47章：inの代わりにofを使用してjavascriptの繰り返し構文に近い記述をする</h3>
+    <p>inではなくof(jsでの書き方)でも可
+    <ul>
+      <li v-for="n of 3">{{n}}</li>
+    </ul>
+    <h3>48章：key属性をつける必要性を理解し、予期せぬバグを起こさないv-forを使う</h3>
+    <p>v-forは要素の移動を最小限に抑えるアルゴリズムを使用し、可能な限りその場で同じタイプの要素を再利用しようとする</p>
+    <ul>
+      <div v-for="fruit in fruits41">
+        <p>{{fruit}}</p>
+        <input type="text">
+      </div>
+    </ul>
+    <button @click="remove48">先頭を削除</button>
+    <p>このままだと、input要素に文字を書き込んだ上でボタンを押すと、inputに書き込んだ要素がそのまま残り続けてしまう</p>
+    <p>そこで、inputに書き込んだ内容も含めて関連付けさせるのがキー属性↓</p>
+    <ul>
+      <div v-for="fruit in fruits41" :key="fruit">
+        <p>{{fruit}}</p>
+        <input type="text">
+      </div>
+    </ul>
+    <button @click="remove48">先頭を削除</button>
+    <p>※ただし、この記述はtemplateタグでは使えないので注意</p>
+    <p>※v-forを使うときは原則キー属性(:key="")を指定すること！</p>
+
+    <h3>50章：vueインスタンス</h3>
+
+
+
+
 
 
 
@@ -197,6 +255,15 @@
         ok38: false,
         maybeOK38: false,
         ok39: true,
+
+        //41章
+        fruits41: ['りんご', 'バナナ', 'ぶどう'],
+        //43章
+        object43: {
+          firstName43: '太郎',
+          lastName43: '田中',
+          age43: 21,
+        }
       },
 
       //25章
@@ -229,6 +296,10 @@
       },
 
 
+
+
+
+//メソッド
       methods: {
         sayHi: function() {
           this.message = 'Hello, VueJS'
@@ -260,6 +331,10 @@
         //26章
         lessThanThreeMethod26: function() {
           return this.counter26 > 3 ? '3より上' : '3以下'
+        },
+        //48章
+        remove48: function() {
+          this.fruits41.shift()
         }
 
 
