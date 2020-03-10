@@ -45,7 +45,7 @@
 
     <a v-on:click="noEvent2" href="https://google.com">Google</a>
     <a v-on:click.prevent href="https://google.com">Google(prevnetで省略)</a>
-<br>
+    <br>
     <!-- 21章：キー修飾子 -->
     <!-- enterとspaveキーを押した時に発火 -->
     <input type="text" v-on:keyup.enter.space="myAlert">
@@ -182,26 +182,48 @@
     <p>※ただし、この記述はtemplateタグでは使えないので注意</p>
     <p>※v-forを使うときは原則キー属性(:key="")を指定すること！</p>
 
-    <h3>50章：vueインスタンス</h3>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <h3>51章：vueインスタンス</h3>
+    <div>
+      <p>{{message51}}</p>
+    </div>
     <!-- <button v-on:click="reverseMessage">メッセージ反転</button> -->
   </div>
+  <div id="app2">
+    <p>{{message51b}}</p>
+  </div>
+
+  <h3>外部からVueインスタンスへアクセスする方法</h3>
+  <div id="app52">
+    <p>{{message52}}</p>
+  </div>
+  <div id="app52b">
+    <p>{{message52}}</p>
+    <button @click="changeMessage52">インスタンス１のmessageを変更</button>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <script>
     new Vue({
@@ -263,7 +285,9 @@
           firstName43: '太郎',
           lastName43: '田中',
           age43: 21,
-        }
+        },
+        //51章
+        message51: 'インスタンス１',
       },
 
       //25章
@@ -294,12 +318,7 @@
           }, 3000)
         }
       },
-
-
-
-
-
-//メソッド
+      //メソッド
       methods: {
         sayHi: function() {
           this.message = 'Hello, VueJS'
@@ -336,8 +355,6 @@
         remove48: function() {
           this.fruits41.shift()
         }
-
-
       },
 
       //メッセージ反転メソッド
@@ -346,7 +363,42 @@
       //     this.message = this.message.split('').reverse().join('')
       //   }
       // }
+    }),
+
+    new Vue({
+      el: '#app2',
+      data: {
+        message51b: 'インスタンス２'
+      }
     })
+
+    var vm52 = new Vue({
+      el: '#app52',
+      data: {
+        message52: 'インスタンス１'
+      }
+    })
+
+    vm52.message52 = '書き換えられました'
+
+    var vm52b = new Vue({
+      el: '#app52b',
+      data: {
+        message52: 'インスタンス２'
+      },
+      methods: {
+        changeMessage52: function() {
+          vm52.message52 = 'インスタンス２から変えました'
+        }
+      }
+    })
+
+
+
+
+
+
+
   </script>
 
 </body>
